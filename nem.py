@@ -52,14 +52,14 @@ def get_song_id(url: str) -> str:
 
 
 def get_data(song_id: str) -> dict:
-    try:
+    # try:
         # 调用js代码来加密表单数据
         javascript = execjs.compile(
             open("./scripts/nem.js", "r", encoding="utf-8").read()
         )
         return javascript.call("main", song_id)
-    except:
-        raise GetDataError
+    # except:
+    #     raise GetDataError
 
 
 def get_response(data: dict) -> dict:
@@ -109,9 +109,13 @@ def neteasemusic(url: str):
     try:
 
         song_id: str = get_song_id(url)
+        info(f"song id: {song_id}")
         data: dict = get_data(song_id)
+        info(f"data: {data}")
         response: dict = get_response(data)
+        info(f"response: {response}")
         audio_url: str = get_audio_url(response)
+        info(f"audio url: {audio_url}")
         download_audio(audio_url)
 
     except GetSongIdError:
