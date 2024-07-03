@@ -10,12 +10,14 @@ def main():
         if user_input == "quit":
             break
 
+        # 检查url类型
         url_type: str = check(user_input)
 
+        # 调用与url_type同名的函数
         if url_type:
             globals()[url_type.lower()](user_input)
         else:
-            error('Sorry, this url is not supported.')
+            error("Sorry, this url is not supported.")
 
 
 if __name__ == "__main__":

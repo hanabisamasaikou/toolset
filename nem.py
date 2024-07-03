@@ -45,6 +45,7 @@ class DownloadAudioError(Exception):
 
 def get_song_id(url: str) -> str:
     try:
+        # 正则匹配出歌曲的id
         return re.findall(r"song\?id=(\d+)", url)[0]
     except:
         raise GetSongIdError
@@ -52,6 +53,7 @@ def get_song_id(url: str) -> str:
 
 def get_data(song_id: str) -> dict:
     try:
+        # 调用js代码来加密表单数据
         javascript = execjs.compile(
             open("./scripts/nem.js", "r", encoding="utf-8").read()
         )
@@ -62,6 +64,7 @@ def get_data(song_id: str) -> dict:
 
 def get_response(data: dict) -> dict:
     try:
+        # 向服务器请求audio的url
         response = requests.post(url=api_url, params=params, headers=headers, data=data)
         return response.json()
     except:
@@ -70,6 +73,7 @@ def get_response(data: dict) -> dict:
 
 def get_audio_url(res: dict) -> str:
     try:
+        # 解析响应并提取出audio的url
         if res["code"] == 200:
             return res["data"][0]["url"]
         else:
@@ -80,6 +84,7 @@ def get_audio_url(res: dict) -> str:
 
 def download_audio(url: str):
     try:
+        # 下载audio
         response = requests.get(url=url, headers=headers)
         if response.status_code == 200:
             audio_name = url.split("/")[-1]
@@ -90,6 +95,7 @@ def download_audio(url: str):
             )
             with open(download_audio_path, "wb") as f:
                 f.write(response.content)
+            info(f"Downloaded audio to {download_audio_path}")
         else:
             error("The audio's response code is not ok!")
     except:
